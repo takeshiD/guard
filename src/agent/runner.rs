@@ -1,4 +1,4 @@
-//! エージェントプロセスの起動・待機
+//! Spawning and waiting on agent processes
 
 use crate::agent::AgentType;
 use anyhow::{Context, Result};
@@ -47,4 +47,3 @@ impl AgentRunner {
         Ok(code)
     }
 }
-

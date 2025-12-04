@@ -1,43 +1,43 @@
-//! エラー型定義
+//! Error types for the guard tool
 
 use thiserror::Error;
 use std::path::PathBuf;
 
-/// guardツールのエラー型
+/// Error type used throughout guard
 #[derive(Error, Debug)]
 pub enum GuardError {
-    /// 設定ファイルのエラー
+    /// Configuration error
     #[error("Configuration error: {0}")]
     Config(String),
 
-    /// Git操作のエラー
+    /// Git operation error
     #[error("Git error: {0}")]
     Git(String),
 
-    /// ファイルが見つからない
+    /// File not found
     #[error("File not found: {0}")]
     FileNotFound(PathBuf),
 
-    /// 無効な行範囲
+    /// Invalid line range
     #[error("Invalid line range: {start}-{end}")]
     InvalidRange { start: usize, end: usize },
 
-    /// エージェントが見つからない
+    /// Agent command not found
     #[error("Agent not found: {0}")]
     AgentNotFound(String),
 
-    /// 厳格モードでの違反
+    /// Violation occurred in strict mode
     #[error("Violation in strict mode")]
     StrictModeViolation,
 
-    /// IO エラー
+    /// I/O error
     #[error(transparent)]
     Io(#[from] std::io::Error),
 
-    /// その他のエラー
+    /// Any other error wrapped by anyhow
     #[error(transparent)]
     Other(#[from] anyhow::Error),
 }
 
-/// guardツールの Result 型
+/// Convenient result type used in this crate
 pub type Result<T> = std::result::Result<T, GuardError>;

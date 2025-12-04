@@ -1,4 +1,4 @@
-//! .guard.toml の読み込み・バリデーション
+//! Loading and validating `.guard.toml` configuration
 
 use crate::config::types::{GuardConfig, GuardSettings};
 use anyhow::{Context, Result};
@@ -7,7 +7,7 @@ use std::path::Path;
 pub struct ConfigParser;
 
 impl ConfigParser {
-    /// .guard.toml を読み込む
+    /// Load `.guard.toml` from the given path.
     pub fn load<P: AsRef<Path>>(path: P) -> Result<GuardConfig> {
         let content = std::fs::read_to_string(path.as_ref())
             .context("Failed to read .guard.toml")?;
@@ -19,21 +19,21 @@ impl ConfigParser {
         Ok(config)
     }
 
-    /// 設定をバリデーション
+    /// Validate configuration consistency.
     fn validate(config: &GuardConfig) -> Result<()> {
-        // バージョンチェック
+        // version check
         if config.version != "1.0" {
             anyhow::bail!("Unsupported config version: {}", config.version);
         }
 
-        // 各ルールをバリデーション
+        // validate each rule
         for guard in &config.guards {
-            // ファイルの存在確認
+            // ensure file exists
             if !guard.path.exists() {
                 anyhow::bail!("Protected file does not exist: {:?}", guard.path);
             }
 
-            // 行範囲の妥当性チェック
+            // validate line ranges
             for range in &guard.ranges {
                 if range.start == 0 || range.end == 0 {
                     anyhow::bail!("Line numbers must be 1-indexed");
@@ -43,7 +43,7 @@ impl ConfigParser {
                 }
             }
 
-            // 範囲の重複チェック
+            // check for overlapping ranges
             for (i, r1) in guard.ranges.iter().enumerate() {
                 for r2 in guard.ranges.iter().skip(i + 1) {
                     if r1.overlaps(r2) {
@@ -61,7 +61,7 @@ impl ConfigParser {
         Ok(())
     }
 
-    /// 初期設定ファイルを生成
+    /// Generate an initial configuration file.
     pub fn init<P: AsRef<Path>>(path: P) -> Result<()> {
         let default_config = GuardConfig {
             version: "1.0".to_string(),

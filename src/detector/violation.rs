@@ -1,4 +1,4 @@
-//! 保護範囲への変更検出ロジック
+//! Detection logic for modifications within protected ranges
 
 use crate::config::{GuardConfig, GuardRule, Violation};
 use crate::config::types::LineRange;
@@ -14,7 +14,7 @@ impl ViolationDetector {
         Self { config }
     }
 
-    /// ファイルが保護範囲を侵害しているかチェック
+    /// Check whether the given file violates any protected range.
     pub fn check_file(&self, path: &PathBuf) -> Result<Option<Violation>> {
         let rule = match self.find_rule(path) {
             Some(r) => r,
@@ -55,7 +55,7 @@ impl ViolationDetector {
             .output()?;
 
         if !output.status.success() {
-            // 新規ファイルの場合は空文字列
+            // For new files, treat as empty content
             return Ok(String::new());
         }
 

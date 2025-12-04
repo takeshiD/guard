@@ -1,9 +1,9 @@
-//! .guard.toml 用の型定義
+//! Types corresponding to `.guard.toml` configuration
 
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-/// .guard.toml のルート構造
+/// Root structure of `.guard.toml`
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct GuardConfig {
     pub version: String,
@@ -12,7 +12,7 @@ pub struct GuardConfig {
     pub settings: GuardSettings,
 }
 
-/// 個別のガードルール
+/// Single guard rule for one file
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct GuardRule {
     pub path: PathBuf,
@@ -20,7 +20,7 @@ pub struct GuardRule {
     pub ranges: Vec<LineRange>,
 }
 
-/// 行範囲 (1-indexed)
+/// Line range (1-indexed)
 #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
 pub struct LineRange {
     pub start: usize,
@@ -28,18 +28,18 @@ pub struct LineRange {
 }
 
 impl LineRange {
-    /// 指定行が範囲内かチェック
+    /// Returns true if the given line is within the range.
     pub fn contains(&self, line: usize) -> bool {
         line >= self.start && line <= self.end
     }
 
-    /// 範囲が重複しているかチェック
+    /// Returns true if two ranges overlap.
     pub fn overlaps(&self, other: &LineRange) -> bool {
         self.start <= other.end && other.start <= self.end
     }
 }
 
-/// 全体設定
+/// Global guard settings
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct GuardSettings {
     #[serde(default = "default_auto_rollback")]
@@ -68,7 +68,7 @@ fn default_log_file() -> PathBuf {
     PathBuf::from(".guard/guard.log")
 }
 
-/// 違反情報
+/// Information about a violation
 #[derive(Debug, Clone)]
 pub struct Violation {
     pub rule: GuardRule,
@@ -123,4 +123,3 @@ mod tests {
         assert!(!r1.overlaps(&r3));
     }
 }
-

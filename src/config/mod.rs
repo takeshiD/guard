@@ -1,4 +1,4 @@
-//! 設定ファイル関連のモジュール
+//! Configuration file modules
 
 pub mod parser;
 pub mod types;

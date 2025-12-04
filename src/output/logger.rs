@@ -1,4 +1,4 @@
-//! ログ出力機能
+//! Logging of violations and errors
 
 use crate::config::Violation;
 use anyhow::Result;

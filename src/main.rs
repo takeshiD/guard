@@ -1,4 +1,4 @@
-//! guard - コーディングエージェント向けファイル保護ツール
+//! guard - protect files from coding agent modifications
 
 use clap::{Parser, Subcommand};
 use guard::agent::{AgentRunner, AgentType};

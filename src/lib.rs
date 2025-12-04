@@ -1,7 +1,7 @@
-//! guard - ファイル保護ツール
+//! guard - File protection tool for coding agents
 //!
-//! コーディングエージェントが指定されたファイルの特定行範囲を
-//! 変更できないようにするRust製CLIツール
+//! A Rust CLI tool that prevents coding agents from modifying
+//! specific line ranges in selected files.
 
 pub mod config;
 pub mod watcher;

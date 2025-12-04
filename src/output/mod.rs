@@ -1,4 +1,4 @@
-//! 出力関連のモジュール
+//! Output and reporting modules
 
 pub mod logger;
 pub mod reporter;

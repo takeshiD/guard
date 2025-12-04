@@ -1,4 +1,4 @@
-//! 違反検出関連のモジュール
+//! Violation detection module
 
 pub mod violation;
 // 将来: pub mod diff_parser;

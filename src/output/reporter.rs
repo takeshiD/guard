@@ -1,4 +1,4 @@
-//! セッションサマリ表示
+//! Session summary reporting
 
 use crate::config::Violation;
 use colored::Colorize;

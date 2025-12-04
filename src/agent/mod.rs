@@ -1,4 +1,4 @@
-//! コーディングエージェント関連のモジュール
+//! Coding agent integration module
 
 pub mod runner;
 pub mod types;

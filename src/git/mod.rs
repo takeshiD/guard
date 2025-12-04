@@ -1,4 +1,4 @@
-//! Git操作関連のモジュール
+//! Git-related operations
 
 pub mod operations;
 pub mod snapshot;

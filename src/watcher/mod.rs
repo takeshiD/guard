@@ -1,4 +1,4 @@
-//! ファイル監視関連のモジュール
+//! File system watching module
 
 pub mod file_watcher;
 pub mod event_handler;

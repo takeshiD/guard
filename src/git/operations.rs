@@ -1,4 +1,4 @@
-//! Git操作（リポジトリルート検出・ファイル復元・スナップショット）
+//! Git operations (finding repo root, restoring files, snapshots)
 
 use anyhow::{Context, Result};
 use std::path::{Path, PathBuf};
@@ -11,13 +11,13 @@ pub struct GitOperations {
 }
 
 impl GitOperations {
-    /// GitOperations を初期化し、リポジトリルートを特定する
+    /// Initialize `GitOperations` and resolve the repository root.
     pub fn new() -> Result<Self> {
         let repo_root = Self::find_repo_root()?;
         Ok(Self { repo_root })
     }
 
-    /// Gitリポジトリのルートを探す
+    /// Find the Git repository root.
     fn find_repo_root() -> Result<PathBuf> {
         let output = Command::new("git")
             .args(["rev-parse", "--show-toplevel"])
@@ -36,7 +36,7 @@ impl GitOperations {
         Ok(PathBuf::from(path))
     }
 
-    /// ファイルをHEADの状態に戻す
+    /// Restore the given file to the state in HEAD.
     pub fn restore_file(&self, path: &Path) -> Result<()> {
         let status = Command::new("git")
             .args(["restore", path.to_str().unwrap()])
@@ -51,7 +51,7 @@ impl GitOperations {
         Ok(())
     }
 
-    /// 現在のワーキングツリーの状態を保存
+    /// Capture a snapshot of the current working tree state.
     pub fn create_snapshot(&self) -> Result<GitSnapshot> {
         let branch = self.get_current_branch()?;
         let head_hash = self.get_head_hash()?;

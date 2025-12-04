@@ -1,4 +1,4 @@
-//! ファイルイベント処理
+//! Handling file change events
 
 use crate::config::GuardConfig;
 use crate::detector::ViolationDetector;
@@ -25,7 +25,7 @@ impl EventHandler {
         })
     }
 
-    /// ファイルイベントを処理
+    /// Handle a single notify event.
     pub fn handle_event(&mut self, event: Event) -> Result<()> {
         for path in event.paths {
             if let Err(e) = self.handle_file_change(&path) {
@@ -37,12 +37,12 @@ impl EventHandler {
     }
 
     fn handle_file_change(&mut self, path: &PathBuf) -> Result<()> {
-        // .guard.toml自体の変更は無視
+        // Ignore changes to the config file itself
         if path.ends_with(".guard.toml") {
             return Ok(());
         }
 
-        // 一時ファイル、swapファイルを無視
+        // Ignore temporary and swap files
         if Self::is_temp_file(path) {
             return Ok(());
         }
