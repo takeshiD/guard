@@ -1,6 +1,36 @@
 [package]
 name = "guard"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "Protect files from coding agent modifications"
+license = "MIT OR Apache-2.0"
 
 [dependencies]
+# CLI
+clap = { version = "4.5", features = ["derive", "cargo"] }
+colored = "2.1"
+
+# Configuration
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+
+# File watching
+notify = "6.1"
+notify-debouncer-full = "0.3"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging & Time
+chrono = "0.4"
+
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "3.1"
+tempfile = "3.10"
+
+[[bin]]
+name = "guard"
+path = "src/main.rs"
