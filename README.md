@@ -128,7 +128,7 @@ You can validate `.guard.toml` without starting an agent:
 
 ```bash
 guard check
-# または
+# or
 guard check --config path/to/.guard.toml
 ```
 
@@ -138,8 +138,6 @@ Guard will check:
 - That each `path` exists
 - That line ranges are 1-based and `start <= end`
 - That ranges for the same file do not overlap
-
----
 
 ## Typical workflow
 
@@ -151,7 +149,7 @@ guard init
 $EDITOR .guard.toml
 
 # 3. Run your agent via guard
-guard codex -- --config codex.toml
+guard codex
 
 # 4. If the agent modifies a protected range,
 #    guard detects the violation, rolls back, and logs it
@@ -159,33 +157,3 @@ guard codex -- --config codex.toml
 # 5. Inspect the log
 cat .guard/guard.log
 ```
-
----
-
-## Limitations and caveats
-
-- The target project must be a Git repository.
-- Rollback uses `git restore`, which resets files to the state in HEAD,
-  including uncommitted changes.
-- The agent commands (`codex`, `claude-code`, `gemini-cli`, etc.) must be
-  available on your `PATH`.
-
----
-
-## For contributors
-
-### Tests / static analysis
-
-```bash
-cargo test
-cargo clippy --all-targets --all-features -- -D warnings
-```
-
-### Main modules
-
-- `src/config/` : `.guard.toml` parsing and validation
-- `src/watcher/` : filesystem watching and event handling
-- `src/detector/` : detection of modifications inside protected ranges
-- `src/git/` : Git snapshots and file restore
-- `src/agent/` : coding agent process management
-- `src/output/` : logging and session reports

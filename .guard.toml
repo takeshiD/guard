@@ -1,0 +1,10 @@
+version = "1.0"
+
+[settings]
+auto_rollback = true
+log_file = ".guard/guard.log"
+strict_mode = true
+
+[[guards]]
+path = "SAMPLE.md"
+ranges = [{ start = 1, end = 6 }]

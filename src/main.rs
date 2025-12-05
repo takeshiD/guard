@@ -31,7 +31,7 @@ enum Commands {
     },
 
     /// Run claude-code with guard protection
-    #[command(name = "claude-code")]
+    #[command(name = "claude")]
     ClaudeCode {
         /// Arguments to pass to claude-code
         #[arg(trailing_var_arg = true)]
@@ -39,7 +39,7 @@ enum Commands {
     },
 
     /// Run gemini-cli with guard protection
-    #[command(name = "gemini-cli")]
+    #[command(name = "gemini")]
     GeminiCli {
         /// Arguments to pass to gemini-cli
         #[arg(trailing_var_arg = true)]
@@ -67,10 +67,10 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn cmd_init() -> anyhow::Result<()> {
-    println!("📝 Initializing guard configuration...");
+    println!("Initializing guard configuration...");
     let config_path = PathBuf::from(".guard.toml");
     if config_path.exists() {
-        println!("⚠️ .guard.toml already exists");
+        println!(".guard.toml already exists");
         return Ok(());
     }
     ConfigParser::init(&config_path)?;
@@ -78,7 +78,6 @@ fn cmd_init() -> anyhow::Result<()> {
 }
 
 fn cmd_run_agent(agent_type: AgentType, args: Vec<String>) -> anyhow::Result<()> {
-    // 設定読み込み
     let config_path = PathBuf::from(".guard.toml");
     let config = ConfigParser::load(&config_path)?;
 
@@ -86,13 +85,13 @@ fn cmd_run_agent(agent_type: AgentType, args: Vec<String>) -> anyhow::Result<()>
     let git = GitOperations::new()?;
     let snapshot = git.create_snapshot()?;
     println!(
-        "📸 Git snapshot: branch {}, head {}, uncommitted: {}",
+        "Git snapshot: branch {}, head {}, uncommitted: {}",
         snapshot.branch, snapshot.head_hash, snapshot.has_uncommitted
     );
 
     // 監視対象ディレクトリ（保護対象ファイルの親ディレクトリを集約）
     let watch_dirs = collect_watch_dirs(&config);
-    println!("📁 Watching {} protected file(s)", config.guards.len());
+    println!("Watching {} protected file(s)", config.guards.len());
 
     let watcher = FileWatcher::new(watch_dirs)?;
     let mut handler = EventHandler::new(config.clone())?;
@@ -114,7 +113,6 @@ fn cmd_run_agent(agent_type: AgentType, args: Vec<String>) -> anyhow::Result<()>
             }
             break;
         }
-
         if let Some(event) = watcher.recv_timeout(Duration::from_millis(200)) {
             handler.handle_event(event)?;
         }
