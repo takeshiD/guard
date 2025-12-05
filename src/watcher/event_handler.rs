@@ -7,12 +7,23 @@ use crate::output::Logger;
 use anyhow::Result;
 use notify::Event;
 use std::path::PathBuf;
+use serde::Serialize;
 
 pub struct EventHandler {
     config: GuardConfig,
     detector: ViolationDetector,
     git: GitOperations,
     logger: Logger,
+    had_violation: bool,
+}
+
+#[derive(Serialize)]
+struct ViolationEvent<'a> {
+    #[serde(rename = "type")]
+    event_type: &'static str,
+    file: String,
+    lines: &'a [usize],
+    reason: String,
 }
 
 impl EventHandler {
@@ -22,6 +33,7 @@ impl EventHandler {
             detector: ViolationDetector::new(config.clone()),
             git: GitOperations::new()?,
             logger: Logger::new(&config.settings.log_file)?,
+            had_violation: false,
         })
     }
 
@@ -52,6 +64,23 @@ impl EventHandler {
             eprintln!("{}", violation.format_message());
 
             self.logger.log_violation(&violation)?;
+            self.had_violation = true;
+
+            // Machine-readable event for outer tooling (e.g. Codex CLI)
+            let event = ViolationEvent {
+                event_type: "violation",
+                file: violation.rule.path.display().to_string(),
+                lines: &violation.modified_lines,
+                reason: violation
+                    .rule
+                    .reason
+                    .clone()
+                    .unwrap_or_else(|| "No reason specified".to_string()),
+            };
+            println!(
+                "GUARD_EVENT:{}",
+                serde_json::to_string(&event).unwrap_or_else(|_| "{}".to_string())
+            );
 
             if self.config.settings.auto_rollback {
                 eprintln!("⏪ Rolling back changes...");
@@ -65,6 +94,10 @@ impl EventHandler {
         }
 
         Ok(())
+    }
+
+    pub fn had_violation(&self) -> bool {
+        self.had_violation
     }
 
     fn is_temp_file(path: &std::path::Path) -> bool {

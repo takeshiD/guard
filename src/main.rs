@@ -120,6 +120,11 @@ fn cmd_run_agent(agent_type: AgentType, args: Vec<String>) -> anyhow::Result<()>
 
     reporter.print_summary();
 
+    // If any violation occurred during the session, use a distinct exit code
+    if handler.had_violation() {
+        std::process::exit(10);
+    }
+
     Ok(())
 }
 
