@@ -7,16 +7,11 @@ modified by coding agents such as Claude Code, OpenAI Codex, and Gemini CLI.
 - Watch the filesystem for changes
 - Automatically rollback protected ranges via Git when a violation is detected
 
----
-
 ## Install / Build
 
 From the repository root:
 
 ```bash
-# Development: run `guard` without installing
-cargo run -- <subcommand> [args...]
-
 # Install locally
 cargo install --path .
 
@@ -28,8 +23,6 @@ Requirements:
 
 - Rust 1.70 or later
 - Git 2.30 or later
-
----
 
 ## Basic usage
 
@@ -93,17 +86,17 @@ Start an agent with protection enabled (example: codex):
 
 ```bash
 # run codex via guard
-guard codex -- <codex用の引数...>
+guard codex <args>
 
-# 例
-guard codex -- --config codex.toml
+# e.g
+guard codex --config codex.toml
 ```
 
 For Claude Code / Gemini CLI:
 
 ```bash
-guard claude-code -- <args>
-guard gemini-cli -- <args>
+guard claude <args>
+guard gemini <args>
 ```
 
 How it works:
@@ -139,21 +132,5 @@ Guard will check:
 - That line ranges are 1-based and `start <= end`
 - That ranges for the same file do not overlap
 
-## Typical workflow
-
-```bash
-# 1. Initialize guard at the project root
-guard init
-
-# 2. Edit .guard.toml to define protected ranges
-$EDITOR .guard.toml
-
-# 3. Run your agent via guard
-guard codex
-
-# 4. If the agent modifies a protected range,
-#    guard detects the violation, rolls back, and logs it
-
-# 5. Inspect the log
-cat .guard/guard.log
-```
+# License
+This project is licensed under the MIT License. see [License](LICENSE)
